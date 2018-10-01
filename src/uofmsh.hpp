@@ -26,6 +26,8 @@ class Shell {
     // @return  the shell's exit status
     int start();
 
+    int fork();
+
     // @return  this shell's prompt
     const std::string getPrompt() {
       return this->prompt;

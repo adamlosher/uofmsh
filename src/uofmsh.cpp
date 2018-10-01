@@ -38,6 +38,13 @@ int Shell::start() {
 
   return EXIT_SUCCESS;
 }
+//fork and exec function
+//Chapter 3 slide 20
+//1st and 3rd includes
+int Shell::runSimpleCommand(std::string... args) {
+
+return 0;
+}
 
 } // namespace uofmsh
 
