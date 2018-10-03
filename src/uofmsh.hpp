@@ -3,6 +3,9 @@
 
 #include <algorithm>
 #include <string>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include <vector>
 
 #include "helpers.hpp"
@@ -26,7 +29,7 @@ class Shell {
     // @return  the shell's exit status
     int start();
 
-    int fork();
+    int runSimpleCommand(std::vector<std::string> args);
 
     // @return  this shell's prompt
     const std::string getPrompt() {
