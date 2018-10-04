@@ -51,12 +51,12 @@ SCENARIO("Splitting a string by a string of delimiters") {
 }
 
 SCENARIO("Trimming a string of by a group of delimiters") {
-  std::string str, trimmed;
+  std::string str, trimmed, delims;
 
   GIVEN("A string with spaces on the left") {
-    std::string str            = "   space on the left";
-    const std::string trimmed  = "space on the left";
-    const std::string delims   = "\n\t ";
+    str     = "   space on the left";
+    trimmed = "space on the left";
+    delims  = "\n\t ";
 
     uofmsh::helpers::trim(str, delims);
 
@@ -68,9 +68,9 @@ SCENARIO("Trimming a string of by a group of delimiters") {
   }
 
   GIVEN("A string with $'s on the right") {
-    std::string str           = "cash$$$$$$";
-    const std::string trimmed = "cash";
-    const std::string delims  = "$";
+    str     = "cash$$$$$$";
+    trimmed = "cash";
+    delims  = "$";
 
     uofmsh::helpers::trim(str, delims);
 
@@ -82,9 +82,9 @@ SCENARIO("Trimming a string of by a group of delimiters") {
   }
 
   GIVEN("A string surrounded by whitespace") {
-    std::string str           = "\t   doggos\n    \t\f";
-    const std::string trimmed = "doggos";
-    const std::string delims  = " \t\f\n";
+    str     = "\t   doggos\n    \t\f";
+    trimmed = "doggos";
+    delims  = " \t\f\n";
 
     uofmsh::helpers::trim(str, delims);
 
@@ -97,10 +97,9 @@ SCENARIO("Trimming a string of by a group of delimiters") {
 }
 
 SCENARIO("Trimming whitespace from a string") {
+  std::vector<std::string> withWhiteSpace, withOutWhiteSpace;
 
   GIVEN("Strings with whitespace") {
-    std::vector<std::string> withWhiteSpace, withOutWhiteSpace;
-
     withWhiteSpace    = { "  a", "b  ", "  ab  ", "  a  b  " };
     withOutWhiteSpace = { "a",   "b",   "ab",     "a  b" };
 

@@ -28,6 +28,8 @@ SCENARIO("Setting the shell prompt") {
 
 SCENARIO("Parsing a shell command") {
 
+  std::vector<std::string> elements;
+
   GIVEN("A shell instance") {
 
     uofmsh::Shell shell;
@@ -35,7 +37,7 @@ SCENARIO("Parsing a shell command") {
     WHEN("It parses a simple command") {
       auto command = "ls -lh";
 
-      std::vector<std::string> elements = { "ls -lh" };
+      elements = { "ls -lh" };
 
       THEN("The command isn't changed") {
         REQUIRE(shell.parse(command) == elements);
@@ -45,7 +47,7 @@ SCENARIO("Parsing a shell command") {
     WHEN("It parses a command with redirection and pipes") {
       auto command = "ls -lh | grep *.c | grep *.h > tmp > file";
 
-      std::vector<std::string> elements = {
+      elements = {
         "ls -lh",
         "|",
         "grep *.c",
@@ -61,6 +63,5 @@ SCENARIO("Parsing a shell command") {
         REQUIRE(shell.parse(command) == elements);
       }
     }
-
   }
 }
