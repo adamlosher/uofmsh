@@ -1,6 +1,6 @@
 CPP = g++
 
-CPP_FLAGS  = -std=c++11
+CPP_FLAGS  = -std=c++17
 CPP_FLAGS += -g
 CPP_FLAGS += -pedantic
 CPP_FLAGS += -Wall

@@ -1,7 +1,6 @@
 #include "helpers.hpp"
 
-namespace uofmsh {
-namespace helpers {
+namespace uofmsh::helpers {
 
 /* Splits a string by a string of delimiters into a vector of substrings
  *
@@ -49,5 +48,4 @@ void trim(std::string &str, const std::string &unwanted_chars) {
   str.erase(0, str.find_first_not_of(unwanted_chars));
 }
 
-} // namespace helpers
-} // namespace uofmsh
+} // namespace uofmsh::helpers
