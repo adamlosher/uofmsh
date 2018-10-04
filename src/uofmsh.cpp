@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ctype.h>
 
 #include "uofmsh.hpp"
 #include "helpers.hpp"
@@ -18,16 +19,10 @@ int Shell::start() {
     std::cout << this->prompt;
 
     // Get user input
-    std::getline(std::cin >> std::ws, input);
+    std::getline(std::cin, input);
 
-    auto commands = helpers::split(input, " \t\n");
-
-    for (auto i = commands.begin(); i != commands.end(); i++) {
-      auto element = *i;
-      helpers::trim(element, " \t\n");
-      auto index = i - commands.begin();
-      std::cout << index << ": " << element << "\n";
-    }
+    // Parse the input into commands, then run those commands
+    // Shell::run(input);
 
     // Break out of input loop if command is exit
     if (input.compare("exit") == 0) {

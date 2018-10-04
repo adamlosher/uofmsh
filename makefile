@@ -84,7 +84,7 @@ test: .test.out
 	@echo "Running the tests..."
 	./.test.out
 
-.test.out: .setup.o $(TESTS)
+.test.out: .setup.o $(SOURCES) $(TESTS)
 	$(CPP) $(TEST_FLAGS) .setup.o $(TESTS) -o .test.out
 
 .setup.o:

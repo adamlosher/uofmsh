@@ -5,10 +5,10 @@
 
 SCENARIO("Setting the shell prompt") {
 
-  GIVEN("A shell instance") {
+  GIVEN("A prompt to use") {
+    const std::string prompt = "~> ";
 
-    WHEN("A shell created with a prompt") {
-      const std::string prompt = "~> ";
+    WHEN("A shell is created with the prompt") {
       uofmsh::Shell shell(prompt);
 
       THEN("It has the supplied prompt") {
@@ -16,47 +16,51 @@ SCENARIO("Setting the shell prompt") {
       }
     }
 
-    WHEN("A shell created without a prompt") {
+    WHEN("A shell is created without the prompt") {
       uofmsh::Shell shell;
 
-      THEN("It has a default prompt") {
-        REQUIRE(shell.getPrompt().size() > 0);
+      THEN("It has the default prompt") {
+        REQUIRE(shell.getPrompt() == "uofmsh> ");
       }
     }
   }
 }
 
-SCENARIO("Adding commands to the shell") {
+SCENARIO("Parsing a shell command") {
 
   GIVEN("A shell instance") {
-    std::vector<std::string> commands;
 
-    WHEN("Given input") {
-      uofmsh::Shell shell;
-      auto input = " \tuptime -p > file; date; fortune | cowsay";
+    uofmsh::Shell shell;
 
-      commands = { "uptime -p > file", "date", "fortune | cowsay" };
+    WHEN("It parses a simple command") {
+      auto command = "ls -lh";
 
-      shell.parse(input);
+      std::vector<std::string> elements = { "ls -lh" };
 
-      THEN("The shell can parse the input") {
-        REQUIRE(shell.getCommands() == commands);
+      THEN("The command isn't changed") {
+        REQUIRE(shell.parse(command) == elements);
       }
     }
 
-    WHEN("Commands are added") {
-      uofmsh::Shell shell;
+    WHEN("It parses a command with redirection and pipes") {
+      auto command = "ls -lh | grep *.c | grep *.h > tmp > file";
 
-      commands = { "uptime -p > file", "date", "fortune | cowsay" };
+      std::vector<std::string> elements = {
+        "ls -lh",
+        "|",
+        "grep *.c",
+        "|",
+        "grep *.h",
+        ">",
+        "tmp",
+        ">",
+        "file"
+      };
 
-      REQUIRE(shell.getCommands().size() == 0);
-
-      for (auto c : commands)
-        shell.addCommand(c);
-
-      THEN("Then the shell has those commands") {
-        REQUIRE(shell.getCommands() == commands);
+      THEN("The command is split by pipes and redirection") {
+        REQUIRE(shell.parse(command) == elements);
       }
     }
+
   }
 }
