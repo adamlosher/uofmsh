@@ -48,4 +48,8 @@ void trim(std::string &str, const std::string &unwanted_chars) {
   str.erase(0, str.find_first_not_of(unwanted_chars));
 }
 
+void trimWhiteSpace(std::string &str) {
+  return trim(str, " \n\t");
+}
+
 } // namespace uofmsh::helpers

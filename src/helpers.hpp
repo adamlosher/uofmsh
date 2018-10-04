@@ -13,6 +13,9 @@ std::vector<std::string> split(const std::string &input, const std::string &deli
 // Trims delimiters from a string
 void trim(std::string &str, const std::string &delims);
 
+// Trims whitespace from a string
+void trimWhiteSpace(std::string &str);
+
 } // namespace helpers
 } // namespace uofmsh
 

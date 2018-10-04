@@ -94,5 +94,24 @@ SCENARIO("Trimming a string of by a group of delimiters") {
       }
     }
   }
+}
 
+SCENARIO("Trimming whitespace from a string") {
+
+  GIVEN("Strings with whitespace") {
+    std::vector<std::string> withWhiteSpace, withOutWhiteSpace;
+
+    withWhiteSpace    = { "  a", "b  ", "  ab  ", "  a  b  " };
+    withOutWhiteSpace = { "a",   "b",   "ab",     "a  b" };
+
+    WHEN("The strings are trimmed of whitespace") {
+      for (auto &s : withWhiteSpace)
+        uofmsh::helpers::trimWhiteSpace(s);
+
+      THEN("The whitespace is removed from the edges of the string") {
+        for (int i = 0; i < 4; i++)
+          REQUIRE(withWhiteSpace[i].compare(withOutWhiteSpace[i]) == 0);
+      }
+    }
+  }
 }
