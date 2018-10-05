@@ -44,20 +44,18 @@ SCENARIO("Parsing a shell command") {
       }
     }
 
-    WHEN("It parses a command with redirection and pipes") {
-      auto command = "ls -lh | grep *.c | grep *.h > tmp > file";
+    WHEN("It parses a single redirection operator") {
+      THEN("The command is invalid") {
+        REQUIRE(shell.parse(">").size() == 0);
+        REQUIRE(shell.parse("<").size() == 0);
+        REQUIRE(shell.parse("|").size() == 0);
+      }
+    }
 
-      elements = {
-        "ls -lh",
-        "|",
-        "grep *.c",
-        "|",
-        "grep *.h",
-        ">",
-        "tmp",
-        ">",
-        "file"
-      };
+    WHEN("It parses a command with redirection and pipes") {
+      auto command = "cat file | grep *.c > output";
+
+      elements = { "cat file", "|", "grep *.c", ">", "output" };
 
       THEN("The command is split by pipes and redirection") {
         REQUIRE(shell.parse(command) == elements);

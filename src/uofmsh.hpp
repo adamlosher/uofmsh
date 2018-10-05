@@ -1,10 +1,13 @@
 #ifndef UOFMSH_H
 #define UOFMSH_H
 
+#include <iostream>
+
 #include <algorithm>
-#include <unordered_map>
+#include <set>
 #include <string>
 #include <vector>
+#include <regex>
 
 #include "helpers.hpp"
 
@@ -16,11 +19,7 @@ class Shell {
   std::string prompt;
 
   // Redirection operators
-  std::unordered_map<char, std::string> redirection = {
-    { '<', "LEFT" },
-    { '>', "RIGHT" },
-    { '|', "PIPE" }
-  };
+  std::set<char> redirection = { '>', '<', '|' };
 
   public:
 
@@ -41,37 +40,94 @@ class Shell {
     }
 
     // Adds input to the shell, then runs the inputed commands
-    // void run(const std::string &input) {
-    //   auto commands = helpers::split(input, ";");
+    void run(const std::string &input) {
 
-    //   for (auto &c : commands) {
-    //     helpers::trim(c, " \t");
-    //
-    //   }
-    // }
+      auto lines = helpers::split(input, ";");
 
-   // Parses a command into elements
+      for (auto l : lines)
+        std::cout << "line: " << l << "\n";
+
+      std::vector<std::vector<std::string>> commands;
+
+      for (auto &command : lines) {
+        helpers::trimWhiteSpace(command);
+        commands.push_back(parse(command));
+        std::cout << command << "\n";
+      }
+
+      for (auto i : commands) {
+        std::cout << "command: ";
+
+        for (auto j : i)
+          std::cout << "element: " << j << " ";
+
+        std::cout << "\n";
+      }
+
+      // Blindly support a very limited format for commands
+      // Valid formats
+      //   command
+      //   command > output
+      //   command < input
+      //   command | command
+      for (auto const &command : commands) {
+        switch (command.size()) {
+          case 1:
+            std::cout << "simple\n";
+            // runSimpleCommand(commands[0]);
+            break;
+          case 3:
+            switch (command[1][0]) {
+              case '|':
+                std::cout << "pipe\n";
+                // runSimplePipe(command[0], command[2]);
+                break;
+              case '<':
+                std::cout << "Left\n";
+                // runSimpleRedirectLeft(command[0], command[2]);
+                break;
+              case '>':
+                std::cout << "Right\n";
+                // runSimpleRedirectLeft(command[0], command[2]);
+                break;
+            }
+            break;
+          default:
+            std::cout << "\nError! Command too complicated or syntax error.\n";
+        }
+      }
+
+    }
+
+   // Parses a command into elements by splitting by redirection operators
    //
-   // @return   the command elements
-   std::vector<std::string> parse(const std::string &command) {
+   //   parse("cat file | grep *.c > output")
+   //
+   //     => { "cat file", "|", "grep *.c", ">", "output" }
+   //
+   // @return   the command elements, including redirection operators
+   std::vector<std::string> parse(std::string command) {
      std::vector<std::string> elements;
 
-     std::string substring;
-     for (const auto &c : command) {
-       if (redirection.count(c) == 0) // If not a redirection operator, then collect the next character
-         substring.push_back(c);
-       else if (std::isspace(c) != 0) // Skip whitespace
-         continue;
-       else {
-        helpers::trim(substring, " \t");       // Trim whitspace from the last command
-        elements.push_back(substring);         // Add the last command
-        elements.push_back(std::string(1, c)); // Add the redirection operator
-        substring = "";                        // Reset our substring
-       }
+     std::regex regex("([><|]|[^><|]+)");  // matches delimiters or consecutive non-delimiters
+
+     std::regex_iterator<std::string::iterator>
+       rit(command.begin(), command.end(), regex);
+
+     std::regex_iterator<std::string::iterator> rend;
+
+     while (rit!=rend) {
+       std::string s = rit->str();
+       helpers::trimWhiteSpace(s);
+
+       if (s.size() > 0)
+         elements.push_back(s);
+
+       ++rit;
      }
 
-     helpers::trim(substring, " \t"); // Trim the final command
-     elements.push_back(substring);   // Add the final command
+     if (elements.size() == 1 && redirection.count(elements[0][0]) != 0)
+       elements.clear();
 
      return elements;
    }

@@ -22,7 +22,7 @@ int Shell::start() {
     std::getline(std::cin, input);
 
     // Parse the input into commands, then run those commands
-    // Shell::run(input);
+    Shell::run(input);
 
     // Break out of input loop if command is exit
     if (input.compare("exit") == 0) {
