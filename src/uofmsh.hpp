@@ -59,17 +59,11 @@ class Shell {
         std::cout << "command: ";
 
         for (auto j : i)
-          std::cout << "element: " << j << " ";
+          std::cout << "'" << j << "' ";
 
         std::cout << "\n";
       }
 
-      // Blindly support a very limited format for commands
-      // Valid formats
-      //   command
-      //   command > output
-      //   command < input
-      //   command | command
       for (auto const &command : commands) {
         switch (command.size()) {
           case 1:
@@ -109,10 +103,19 @@ class Shell {
    std::vector<std::string> parse(std::string command) {
      std::vector<std::string> elements;
 
-     std::regex regex("([><|]|[^><|]+)");  // matches delimiters or consecutive non-delimiters
+     std::regex valid_format("(([^<>|]+)|([^<>|]+\\s+[^<>|])+|([^<>|]+\\s+[<>|]\\s+[^<>|])+)");
+
+try {
+     std::cout << "Is valid? " << (std::regex_match(command, valid_format) == 0 ? "false" : "true") << "\n";
+}      catch (const std::regex_error& e) {
+                  std::cout << "regex_error caught: " << e.what() << '\n';
+                              }
+
+     // matches redirections or consecutive non-redirections
+     std::regex redirections("([><|]|[^><|]+)");
 
      std::regex_iterator<std::string::iterator>
-       rit(command.begin(), command.end(), regex);
+       rit(command.begin(), command.end(), redirections);
 
      std::regex_iterator<std::string::iterator> rend;
 
